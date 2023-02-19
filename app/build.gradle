@@ -1,0 +1,112 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+}
+
+android {
+    namespace 'com.jorgetargz.tmdbcompose'
+    compileSdk 33
+
+    defaultConfig {
+        def localProperties = new Properties()
+        localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+        applicationId "com.jorgetargz.tmdbcompose"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "String", "API_KEY", "\"" + localProperties['API_KEY'] + "\""
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.2.0'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+
+    //Core
+    implementation 'androidx.core:core-ktx:1.9.0'
+
+    //AppCompat
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+
+    //Activity Compose
+    implementation 'androidx.activity:activity-compose:1.6.0'
+
+    //Compose
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+
+    //Material Compose
+    implementation "androidx.compose.material:material:$material_compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$material_compose_version"
+
+    //Material
+    implementation 'com.google.android.material:material:1.8.0'
+
+    //Coil
+    implementation "io.coil-kt:coil-compose:2.2.2"
+
+    //Timber for logging
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    //SwipeRefreshLayout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    //Navigation
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+
+    //Koin
+    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
+
+    //Room
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation "androidx.room:room-ktx:$room_version"
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    kapt("androidx.room:room-compiler:$room_version")
+
+    // Retrofit and Gson
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+
+    // OkHttp3 logging interceptor
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
+}

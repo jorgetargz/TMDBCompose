@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TMDBCompose</string>
+    <string name="trending_movies">Trending movies</string>
+    <string name="tv_shows">Tv Shows</string>
+    <string name="movies">Movies</string>
+    <string name="trending_shows">Trending shows</string>
+</resources>
