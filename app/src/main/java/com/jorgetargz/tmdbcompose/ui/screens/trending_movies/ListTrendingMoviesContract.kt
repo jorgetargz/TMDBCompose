@@ -8,6 +8,8 @@ interface ListTrendingMoviesContract {
     sealed class ListTrendingMoviesEvent {
         class FilterTrendingMovies(val nombre: String) : ListTrendingMoviesEvent()
         object LoadTrendingMovies: ListTrendingMoviesEvent()
+        object ClearError : ListTrendingMoviesEvent()
+
     }
 
     data class ListTrendingMoviesState(

@@ -18,7 +18,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jorgetargz.tmdbcompose.R
 import com.jorgetargz.tmdbcompose.data.remote.network.Config
-import com.jorgetargz.tmdbcompose.domain.models.Movie
 import com.jorgetargz.tmdbcompose.domain.models.TVShow
 import com.jorgetargz.tmdbcompose.ui.common.CustomBottomAppBar
 import com.jorgetargz.tmdbcompose.ui.common.CustomTopAppBar
@@ -28,7 +27,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ListTrendingShowsScreen(
     onNavigateToTvShows: () -> Unit,
     onNavigateToMovies: () -> Unit,
-    onNavigateToTVShowDetail: (Int) -> Unit = { },
+    onNavigateToTVShowDetail: (Int) -> Unit,
 ) {
     val state = rememberScaffoldState()
     Scaffold(
@@ -79,6 +78,7 @@ fun ListTrendingShows(
         state.value.error?.let { error ->
             val message = error
             snackbarHostState.showSnackbar(message)
+            viewModel.handleEvent(ListTrendingTVShowsContract.ListTrendingTVShowsEvent.ClearError)
         }
     }
 }

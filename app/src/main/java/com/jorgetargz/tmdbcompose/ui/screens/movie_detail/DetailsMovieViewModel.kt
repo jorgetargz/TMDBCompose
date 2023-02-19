@@ -1,13 +1,13 @@
-package com.jorgetargz.tmdbcompose.ui.screens.trending_shows
+package com.jorgetargz.tmdbcompose.ui.screens.movie_detail
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadCachedTrendingTVShowsUseCase
-import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadTrendingTVShowsUseCase
+import com.jorgetargz.tmdbcompose.domain.models.Movie
+import com.jorgetargz.tmdbcompose.domain.use_cases.movies.LoadCachedMovieByIdUseCase
+import com.jorgetargz.tmdbcompose.domain.use_cases.movies.LoadMovieByIdUseCase
 import com.jorgetargz.tmdbcompose.utils.NetworkResult
 import com.jorgetargz.tmdbcompose.utils.hasInternetConnection
-
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -15,21 +15,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ListTrendingTVShowsViewModel(
+class DetailsMovieViewModel(
     private val appContext: Context,
-    private val loadTrendingTVShowsUseCase: LoadTrendingTVShowsUseCase,
-    private val loadCachedTrendingTVShowsUseCase: LoadCachedTrendingTVShowsUseCase,
+    private val loadMovieByIdUseCase: LoadMovieByIdUseCase,
+    private val loadCachedMovieByIdUseCase: LoadCachedMovieByIdUseCase,
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<ListTrendingTVShowsContract.ListTrendingTVShowsState> by lazy {
-        MutableStateFlow(ListTrendingTVShowsContract.ListTrendingTVShowsState())
+    private val _uiState: MutableStateFlow<DetailsMovieContract.DetailsMovieState> by lazy {
+        MutableStateFlow(DetailsMovieContract.DetailsMovieState())
     }
-    val uiState: StateFlow<ListTrendingTVShowsContract.ListTrendingTVShowsState> = _uiState
+    val uiState: StateFlow<DetailsMovieContract.DetailsMovieState> = _uiState
 
-    private fun loadTrendingTVShows() {
+    private fun loadMovieById(id: Int) {
         viewModelScope.launch {
             if (appContext.hasInternetConnection()) {
-                loadTrendingTVShowsUseCase.invoke()
+                loadMovieByIdUseCase.invoke(id)
                     .catch(action = { cause ->
                         _uiState.update {
                             it.copy(
@@ -55,15 +55,14 @@ class ListTrendingTVShowsViewModel(
                             }
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
-                                    tvShows = result.data ?: emptyList(),
-                                    tvShowsFiltered = result.data ?: emptyList(),
+                                    movie = result.data ?: Movie(),
                                     isLoading = false
                                 )
                             }
                         }
                     }
             } else {
-                loadCachedTrendingTVShowsUseCase.invoke()
+                loadCachedMovieByIdUseCase.invoke(id)
                     .catch(action = { cause ->
                         _uiState.update {
                             it.copy(
@@ -90,8 +89,7 @@ class ListTrendingTVShowsViewModel(
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
                                     error = "Loaded from cache",
-                                    tvShows = result.data ?: emptyList(),
-                                    tvShowsFiltered = result.data ?: emptyList(),
+                                    movie = result.data ?: Movie(),
                                     isLoading = false
                                 )
                             }
@@ -101,37 +99,19 @@ class ListTrendingTVShowsViewModel(
         }
     }
 
-    private fun filterTVShows(nombre: String) {
-        viewModelScope.launch {
-            try {
-                _uiState.update {
-                    it.copy(
-                        tvShowsFiltered = _uiState.value.tvShows.filter { movie ->
-                            movie.name.contains(nombre, true)
-                        }
-                    )
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
-    }
-
     private fun clearError() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(error = null)
-            }
+        _uiState.update {
+            it.copy(
+                error = null
+            )
         }
     }
 
-    fun handleEvent(event: ListTrendingTVShowsContract.ListTrendingTVShowsEvent) {
+
+    fun handleEvent(event: DetailsMovieContract.DetailsMovieEvent) {
         when (event) {
-            is ListTrendingTVShowsContract.ListTrendingTVShowsEvent.LoadTrendingTVShows -> loadTrendingTVShows()
-            is ListTrendingTVShowsContract.ListTrendingTVShowsEvent.FilterTrendingTVShows -> filterTVShows(
-                event.nombre
-            )
-            ListTrendingTVShowsContract.ListTrendingTVShowsEvent.ClearError -> clearError()
+            is DetailsMovieContract.DetailsMovieEvent.LoadMovie -> loadMovieById(event.id)
+            DetailsMovieContract.DetailsMovieEvent.ClearError -> clearError()
         }
     }
 }

@@ -117,12 +117,19 @@ class ListTrendingMoviesViewModel(
         }
     }
 
+    private fun clearError() {
+        _uiState.update {
+            it.copy(error = null)
+        }
+    }
+
     fun handleEvent(event: ListTrendingMoviesContract.ListTrendingMoviesEvent) {
         when (event) {
             is ListTrendingMoviesContract.ListTrendingMoviesEvent.LoadTrendingMovies -> loadTrendingMovies()
             is ListTrendingMoviesContract.ListTrendingMoviesEvent.FilterTrendingMovies -> filterMovies(
                 event.nombre
             )
+            ListTrendingMoviesContract.ListTrendingMoviesEvent.ClearError -> clearError()
         }
     }
 }

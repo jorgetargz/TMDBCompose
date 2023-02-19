@@ -27,7 +27,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ListTrendingMoviesScreen(
     onNavigateToTvShows: () -> Unit,
     onNavigateToMovies: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit = { },
+    onNavigateToMovieDetail: (Int) -> Unit,
 ) {
     val state = rememberScaffoldState()
     Scaffold(
@@ -78,6 +78,7 @@ fun ListTrendingMovies(
         state.value.error?.let { error ->
             val message = error
             snackbarHostState.showSnackbar(message)
+            viewModel.handleEvent(ListTrendingMoviesContract.ListTrendingMoviesEvent.ClearError)
         }
     }
 }
