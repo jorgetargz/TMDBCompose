@@ -15,6 +15,7 @@ import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadTrendingTVShowsU
 import com.jorgetargz.tmdbcompose.ui.screens.trending_movies.ListTrendingMoviesViewModel
 import com.jorgetargz.tmdbcompose.ui.screens.trending_shows.ListTrendingTVShowsViewModel
 import com.jorgetargz.tmdbcompose.ui.screens.movie_detail.DetailsMovieViewModel
+import com.jorgetargz.tmdbcompose.ui.screens.show_detail.DetailsTVShowViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -40,4 +41,5 @@ val appModule = module {
     viewModelOf(::ListTrendingMoviesViewModel)
     viewModelOf(::ListTrendingTVShowsViewModel)
     viewModelOf(::DetailsMovieViewModel)
+    viewModelOf(::DetailsTVShowViewModel)
 }
