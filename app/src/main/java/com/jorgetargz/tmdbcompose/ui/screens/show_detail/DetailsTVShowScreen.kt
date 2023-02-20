@@ -1,4 +1,4 @@
-package com.jorgetargz.tmdbcompose.ui.screens.movie_detail
+package com.jorgetargz.tmdbcompose.ui.screens.show_detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,22 +17,22 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jorgetargz.tmdbcompose.R
 import com.jorgetargz.tmdbcompose.data.remote.network.common.Constantes
-import com.jorgetargz.tmdbcompose.domain.models.Movie
+import com.jorgetargz.tmdbcompose.domain.models.TVShow
 import com.jorgetargz.tmdbcompose.ui.common.CustomBottomAppBar
 import com.jorgetargz.tmdbcompose.ui.common.CustomSnackbar
 import com.jorgetargz.tmdbcompose.ui.common.CustomTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun DetailsMovieScreen(
-    movieId: Int,
+fun TVShowDetailScreen(
+    showId: Int,
     onNavigateToTvShows: () -> Unit,
     onNavigateToMovies: () -> Unit,
 ) {
     val state = rememberScaffoldState()
     Scaffold(
         scaffoldState = state,
-        topBar = { CustomTopAppBar(stringResource(id = R.string.movie_detail)) },
+        topBar = { CustomTopAppBar(stringResource(id = R.string.show_detail)) },
         bottomBar = {
             CustomBottomAppBar(
                 onNavigateToTvShows = { onNavigateToTvShows() },
@@ -47,7 +47,7 @@ fun DetailsMovieScreen(
                 .padding(padding)
         ) {
             MovieDetail(
-                movieId = movieId,
+                showId = showId,
                 snackbarHostState = state.snackbarHostState
             )
             CustomSnackbar(
@@ -61,15 +61,15 @@ fun DetailsMovieScreen(
 
 @Composable
 fun MovieDetail(
-    movieId: Int,
+    showId: Int,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
-    viewModel: DetailsMovieViewModel = koinViewModel()
+    viewModel: DetailsTVShowViewModel = koinViewModel()
 ) {
     val state = viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.handleEvent(DetailsMovieContract.DetailsMovieEvent.LoadMovie(movieId))
+        viewModel.handleEvent(DetailsTVShowContract.DetailsTVShowEvent.LoadTVShow(showId))
     }
 
     val dismiss = stringResource(id = R.string.dismiss)
@@ -77,7 +77,7 @@ fun MovieDetail(
         state.value.error?.let {
             snackbarHostState.showSnackbar(it, dismiss, SnackbarDuration.Long)
             snackbarHostState.currentSnackbarData?.dismiss()
-            viewModel.handleEvent(DetailsMovieContract.DetailsMovieEvent.ClearError)
+            viewModel.handleEvent(DetailsTVShowContract.DetailsTVShowEvent.ClearError)
         }
     }
 
@@ -92,7 +92,7 @@ fun MovieDetail(
     } else {
         MovieDetailCard(
             modifier = modifier,
-            movie = state.value.movie,
+            show = state.value.tvShow,
         )
     }
 }
@@ -100,14 +100,14 @@ fun MovieDetail(
 @Composable
 fun MovieDetailCard(
     modifier: Modifier = Modifier,
-    movie: Movie,
+    show: TVShow,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        val posterURL = Constantes.IMAGE_URL + movie.posterPath
+        val posterURL = Constantes.IMAGE_URL + show.posterPath
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(posterURL)
@@ -121,17 +121,17 @@ fun MovieDetailCard(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = movie.title,
+            text = show.name,
             style = MaterialTheme.typography.h5,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = movie.overview,
+            text = show.overview,
             style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = movie.releaseDate.toString(),
+            text = show.firstAirDate.toString(),
             style = MaterialTheme.typography.body1,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -142,7 +142,7 @@ fun MovieDetailCard(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = movie.voteAverage.toString(),
+                text = show.voteAverage.toString(),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -154,7 +154,7 @@ fun MovieDetailCard(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = movie.voteCount.toString(),
+                text = show.voteCount.toString(),
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(bottom = 8.dp)
             )

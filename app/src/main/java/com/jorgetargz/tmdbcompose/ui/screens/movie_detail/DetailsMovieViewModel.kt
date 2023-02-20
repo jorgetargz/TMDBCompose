@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jorgetargz.tmdbcompose.domain.models.Movie
 import com.jorgetargz.tmdbcompose.domain.use_cases.movies.LoadCachedMovieByIdUseCase
 import com.jorgetargz.tmdbcompose.domain.use_cases.movies.LoadMovieByIdUseCase
+import com.jorgetargz.tmdbcompose.ui.common.Constants
 import com.jorgetargz.tmdbcompose.utils.NetworkResult
 import com.jorgetargz.tmdbcompose.utils.hasInternetConnection
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,7 +89,7 @@ class DetailsMovieViewModel(
                             }
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
-                                    error = "Loaded from cache",
+                                    error = Constants.CACHE_LOADED,
                                     movie = result.data ?: Movie(),
                                     isLoading = false
                                 )

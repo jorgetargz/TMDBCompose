@@ -7,6 +7,7 @@ interface DetailsTVShowContract {
 
     sealed class DetailsTVShowEvent {
         class LoadTVShow(val id: Int) : DetailsTVShowEvent()
+        object ClearError : DetailsTVShowEvent()
     }
 
     data class DetailsTVShowState(

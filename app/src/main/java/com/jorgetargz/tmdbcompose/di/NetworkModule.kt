@@ -2,7 +2,7 @@ package com.jorgetargz.tmdbcompose.di
 
 import com.jorgetargz.tmdbcompose.BuildConfig
 import com.jorgetargz.tmdbcompose.data.remote.network.AuthInterceptor
-import com.jorgetargz.tmdbcompose.data.remote.network.Config
+import com.jorgetargz.tmdbcompose.data.remote.network.common.Constantes
 import com.jorgetargz.tmdbcompose.data.remote.network.services.MoviesService
 import com.jorgetargz.tmdbcompose.data.remote.network.services.TVShowsService
 import okhttp3.OkHttpClient
@@ -13,7 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 val networkModule = module {
 
-    val baseUrl = Config.BASE_URL
+    val baseUrl = Constantes.BASE_URL
 
     single {
         HttpLoggingInterceptor().apply {

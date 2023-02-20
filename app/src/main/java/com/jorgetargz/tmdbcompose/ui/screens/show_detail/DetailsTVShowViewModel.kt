@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jorgetargz.tmdbcompose.domain.models.TVShow
 import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadCachedTVShowByIdUseCase
 import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadTVShowByIdUseCase
+import com.jorgetargz.tmdbcompose.ui.common.Constants
 import com.jorgetargz.tmdbcompose.utils.NetworkResult
 import com.jorgetargz.tmdbcompose.utils.hasInternetConnection
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,7 +90,7 @@ class DetailsTVShowViewModel(
                             }
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
-                                    error = "Loaded from cache",
+                                    error = Constants.CACHE_LOADED,
                                     tvShow = result.data ?: TVShow(),
                                     isLoading = false
                                 )
@@ -100,10 +101,17 @@ class DetailsTVShowViewModel(
         }
     }
 
+    private fun clearError() {
+        _uiState.update {
+            it.copy(error = null)
+        }
+    }
+
 
     fun handleEvent(event: DetailsTVShowContract.DetailsTVShowEvent) {
         when (event) {
             is DetailsTVShowContract.DetailsTVShowEvent.LoadTVShow -> loadTVShowById(event.id)
+            DetailsTVShowContract.DetailsTVShowEvent.ClearError -> clearError()
         }
     }
 }

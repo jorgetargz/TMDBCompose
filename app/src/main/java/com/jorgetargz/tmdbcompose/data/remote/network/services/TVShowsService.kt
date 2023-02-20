@@ -2,6 +2,7 @@ package com.jorgetargz.tmdbcompose.data.remote.network.services
 
 import com.jorgetargz.tmdbcompose.data.models.entitys.TVShowEntity
 import com.jorgetargz.tmdbcompose.data.models.responses.TrendingTVShowResponse
+import com.jorgetargz.tmdbcompose.data.remote.network.common.Constantes
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,9 +12,9 @@ import retrofit2.http.Path
  */
 interface TVShowsService {
 
-    @GET("/3/trending/tv/week")
+    @GET(Constantes.TRENDING_TV_SHOWS_URL)
     suspend fun getPopularTVShows(): Response<TrendingTVShowResponse>
 
-    @GET("/3/tv/{tv_id}")
-    suspend fun getTVShow(@Path("tv_id") id: Int): Response<TVShowEntity>
+    @GET(Constantes.TV_SHOW_URL)
+    suspend fun getTVShow(@Path(Constantes.TV_ID) id: Int): Response<TVShowEntity>
 }

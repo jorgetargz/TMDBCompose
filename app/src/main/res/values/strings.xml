@@ -5,4 +5,8 @@
     <string name="movies">Movies</string>
     <string name="trending_shows">Trending shows</string>
     <string name="movie_detail">Movie</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="vote_average">"Vote average: "</string>
+    <string name="vote_count">"Vote count: "</string>
+    <string name="show_detail">TV Show</string>
 </resources>

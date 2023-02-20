@@ -1,15 +1,16 @@
 package com.jorgetargz.tmdbcompose.data.local
 
 import androidx.room.*
+import com.jorgetargz.tmdbcompose.data.local.common.Constantes
 import com.jorgetargz.tmdbcompose.data.models.entitys.MovieEntity
 
 @Dao
 interface MoviesDao {
 
-    @Query("SELECT * FROM movies order by popularity DESC")
+    @Query(Constantes.SELECT_MOVIES_ORDER_BY_POPULARITY)
     fun getAll(): List<MovieEntity>
 
-    @Query("SELECT * FROM movies WHERE id = :id")
+    @Query(Constantes.SELECT_MOVIES_BY_ID)
     fun getById(id: Int): MovieEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -18,9 +19,6 @@ interface MoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(movies: List<MovieEntity>)
 
-    @Query("Delete from movies where id = :id")
-    fun deleteById(id: Int)
-
-    @Query("DELETE FROM movies")
+    @Query(Constantes.DELETE_ALL_MOVIES)
     fun deleteAll()
 }

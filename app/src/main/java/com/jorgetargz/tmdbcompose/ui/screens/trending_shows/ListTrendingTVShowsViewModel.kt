@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadCachedTrendingTVShowsUseCase
 import com.jorgetargz.tmdbcompose.domain.use_cases.tv_shows.LoadTrendingTVShowsUseCase
+import com.jorgetargz.tmdbcompose.ui.common.Constants
 import com.jorgetargz.tmdbcompose.utils.NetworkResult
 import com.jorgetargz.tmdbcompose.utils.hasInternetConnection
 
@@ -89,7 +90,7 @@ class ListTrendingTVShowsViewModel(
                             }
                             is NetworkResult.Success -> _uiState.update {
                                 it.copy(
-                                    error = "Loaded from cache",
+                                    error = Constants.CACHE_LOADED,
                                     tvShows = result.data ?: emptyList(),
                                     tvShowsFiltered = result.data ?: emptyList(),
                                     isLoading = false

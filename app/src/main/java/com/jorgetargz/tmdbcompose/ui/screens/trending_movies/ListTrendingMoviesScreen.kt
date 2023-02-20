@@ -17,9 +17,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jorgetargz.tmdbcompose.R
-import com.jorgetargz.tmdbcompose.data.remote.network.Config
+import com.jorgetargz.tmdbcompose.data.remote.network.common.Constantes
 import com.jorgetargz.tmdbcompose.domain.models.Movie
 import com.jorgetargz.tmdbcompose.ui.common.CustomBottomAppBar
+import com.jorgetargz.tmdbcompose.ui.common.CustomSnackbar
 import com.jorgetargz.tmdbcompose.ui.common.CustomTopAppBar
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,11 +42,21 @@ fun ListTrendingMoviesScreen(
         },
         snackbarHost = { state.snackbarHostState }
     ) { padding ->
-        ListTrendingMovies(
-            onNavigateToMovieDetail = onNavigateToMovieDetail,
-            modifier = Modifier.padding(padding),
-            snackbarHostState = state.snackbarHostState
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            ListTrendingMovies(
+                onNavigateToMovieDetail = onNavigateToMovieDetail,
+                snackbarHostState = state.snackbarHostState
+            )
+            CustomSnackbar(
+                snackbarHostState = state.snackbarHostState,
+                onDismiss = { state.snackbarHostState.currentSnackbarData?.dismiss() },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }
 
@@ -57,9 +68,20 @@ fun ListTrendingMovies(
     viewModel: ListTrendingMoviesViewModel = koinViewModel()
 ) {
     val state = viewModel.uiState.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.handleEvent(ListTrendingMoviesContract.ListTrendingMoviesEvent.LoadTrendingMovies)
     }
+
+    val dismiss = stringResource(id = R.string.dismiss)
+    LaunchedEffect(state.value.error) {
+        state.value.error?.let { error ->
+            snackbarHostState.showSnackbar(error, dismiss)
+            snackbarHostState.currentSnackbarData?.dismiss()
+            viewModel.handleEvent(ListTrendingMoviesContract.ListTrendingMoviesEvent.ClearError)
+        }
+    }
+
     if (state.value.isLoading) {
         Box(
             modifier = modifier.fillMaxSize(),
@@ -73,13 +95,6 @@ fun ListTrendingMovies(
             movies = state.value.movies,
             onNavigateToMovieDetail = onNavigateToMovieDetail,
         )
-    }
-    LaunchedEffect(state.value.error) {
-        state.value.error?.let { error ->
-            val message = error
-            snackbarHostState.showSnackbar(message)
-            viewModel.handleEvent(ListTrendingMoviesContract.ListTrendingMoviesEvent.ClearError)
-        }
     }
 }
 
@@ -136,7 +151,7 @@ fun CardMovie(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            val posterURL = Config.IMAGE_URL + movie.posterPath
+            val posterURL = Constantes.IMAGE_URL + movie.posterPath
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(posterURL)
